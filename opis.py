@@ -49,17 +49,7 @@ def getlatlongsortedwithdistanceresults(user_ticket, lat, long, sort_product, di
 	}
 	url = constants.GET_LAT_LONG_SORTED_WITH_DISTANCE_RESULTS_URL
 	r = requests.post(url, data=payload)
-	soup = BeautifulSoup(r.text, "xml")
-	output = {}
-	for i, station in enumerate(soup.find_all('StationPricesByLatLongMultiPlus'), start=1):
-		station_results = {}
-		for field in constants.fields:
-			try:
-				station_results[field[0]] = station.find(field[1]).string
-			except (AttributeError):
-				station_results[field[0]] = None
-		output["station_{}".format(i)] = station_results
-	return output
+	return to_dict(r, tag='StationPricesByLatLongMultiPlus')
 
 
 def getzipcoderesults(user_ticket, zip):
@@ -79,15 +69,21 @@ def getzipcodesortedresults(user_ticket, zip, sort_product):
 	return to_dict(r)
 
 
-def to_dict(r):
+def to_dict(r, **kwarg):
 	soup = BeautifulSoup(r.text, "xml")
 	output = {}
-	for i, station in enumerate(soup.find_all('StationPricesMultiPlus'), start=1):
+	output["stations"] = {}
+	if ('tag' in kwarg):
+		tag = kwarg['tag']
+	else:
+		tag = "StationPricesMultiPlus"
+	for i, station in enumerate(soup.find_all(tag), start=1):
 		station_results = {}
 		for field in constants.fields:
 			try:
 				station_results[field[0]] = station.find(field[1]).string
 			except (AttributeError):
 				station_results[field[0]] = None
-		output["station_{}".format(i)] = station_results
+		output["stations"]["station_{}".format(i)] = station_results
+	output["count"] = len(output["stations"])
 	return output
