@@ -83,7 +83,7 @@ def to_dict(r, **kwarg):
 			try:
 				station_results[field[0]] = station.find(field[1]).string
 			except (AttributeError):
-				station_results[field[0]] = None
+				station_results[field[0]] = 'None'
 		output["stations"]["station_{}".format(i)] = station_results
 	output["count"] = len(output["stations"])
 	return output
