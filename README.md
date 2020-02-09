@@ -122,4 +122,4 @@ print(average_price)
 ## Dependencies :clap:
 
 * [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/)
-* [Requests](http://docs.python-requests.org/en/master/)
+* [Requests](https://requests.readthedocs.io/en/master/)
